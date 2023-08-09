@@ -8,6 +8,9 @@ class Escuela(models.Model):
     email = models.EmailField()
     contact_number = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 
 class Estudiante(models.Model):
 
