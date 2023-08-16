@@ -1,4 +1,8 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, RelatedField
+from rest_framework.serializers import (
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    RelatedField,
+)
 from .models import Escuela, Estudiante, Maestro
 
 
@@ -12,29 +16,31 @@ class EscuelaSerializer(ModelSerializer):
     class Meta:
         model = Escuela
         # fields = ["id", "name", "location", "email", "contact_number"]
+
         fields = "__all__"
+
         # exclude = ["email"]
+
         # read_only_fields = ["contact_number"]
 
         # Al dejar fuera un campo del serializer que tenemos en el modelo ya sea con fields o
-        # exclude, ese campo se toma como si tuviera la propiedad blank=True en nuestro su 
+        # exclude, ese campo se toma como si tuviera la propiedad blank=True en nuestro su
         # esquema.
-    
+
         # Podemos espeficificar campos que queramos que sean de solo lectura con el siguiente
-        # patrón 
+        # patrón
 
-        extra_kwargs = {'location': {'write_only': True}}
+        extra_kwargs = {"location": {"write_only": True}}
 
-        
+
 class EstudianteSerializer(ModelSerializer):
-    # Todas las relaciones directas a un padre pueden ser accedidas con PrimaryKeyRelatedField, 
-    # las relaciones inversas para mostrar a un hijo no están incluidas por default y tienen que 
+    # Todas las relaciones directas a un padre pueden ser accedidas con PrimaryKeyRelatedField,
+    # las relaciones inversas para mostrar a un hijo no están incluidas por default y tienen que
     # ser incluídas explícitamente.
 
     # Podemos especificar los datos que queramos obtener del padre con el parámetro source y utilizando
     # la notación del punto para obtener los atributos del padre.
 
-    
     school_name = PrimaryKeyRelatedField(source="school.name", read_only=True)
 
     class Meta:
