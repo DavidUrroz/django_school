@@ -3,3 +3,8 @@ Django==4.2.4
 djangorestframework==3.14.0
 pytz==2023.3
 sqlparse==0.4.4
+<<<<<<< HEAD
+=======
+typing-extensions==4.7.1
+tzdata==2023.3
+>>>>>>> bca81bf151b653151c64a0b5adee35153009ca45
