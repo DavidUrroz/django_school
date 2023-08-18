@@ -12,6 +12,13 @@ class Escuela(models.Model):
         return self.name
 
 
+class Salon(models.Model):
+
+    desks_quant = models.SmallIntegerField()
+    fans_quant = models.SmallIntegerField(blank=True, default=0)
+    acrylic_board = models.BooleanField()
+
+
 class Estudiante(models.Model):
 
     grades = [
@@ -24,6 +31,7 @@ class Estudiante(models.Model):
     ]
 
     school = models.ForeignKey(Escuela, on_delete=models.CASCADE)
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     school_grade = models.CharField(max_length=20, choices=grades)
@@ -33,7 +41,10 @@ class Estudiante(models.Model):
 class Maestro(models.Model):
 
     school = models.ForeignKey(Escuela, on_delete=models.CASCADE)
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100)
     field_of_study = models.CharField(max_length=60)
     years_of_experience = models.SmallIntegerField()
     on_duty = models.BooleanField()
+
+

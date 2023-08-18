@@ -3,7 +3,7 @@ from rest_framework.serializers import (
     PrimaryKeyRelatedField,
     RelatedField,
 )
-from .models import Escuela, Estudiante, Maestro
+from .models import Escuela, Estudiante, Maestro, Salon
 
 
 class EscuelaSerializer(ModelSerializer):
@@ -51,4 +51,10 @@ class EstudianteSerializer(ModelSerializer):
 class MaestroSerializer(ModelSerializer):
     class Meta:
         model = Maestro
+        fields = "__all__"
+
+
+class SalonSerializer(ModelSerializer):
+    class Meta:
+        model = Salon
         fields = "__all__"

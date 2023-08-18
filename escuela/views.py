@@ -5,8 +5,8 @@ from rest_framework import permissions
 
 
 # from .permissions import IsOwnerOrReadOnly
-from .models import Escuela, Estudiante, Maestro
-from .serializers import EscuelaSerializer, EstudianteSerializer, MaestroSerializer
+from .models import Escuela, Estudiante, Maestro, Salon
+from .serializers import EscuelaSerializer, EstudianteSerializer, MaestroSerializer, SalonSerializer
 
 # Create your views here.
 
@@ -55,3 +55,22 @@ class EstudianteViewset(ModelViewSet):
 class MaestroViewset(ModelViewSet):
     queryset = Maestro.objects.all()
     serializer_class = MaestroSerializer
+
+
+class SalonViewset(ModelViewSet):
+    queryset = Salon.objects.all()
+    serializer_class = SalonSerializer
+
+    def list(self, request):
+        desks_quant = request.GET.get("desks_quant", None)
+        fans_quant = request.GET.get("fans_quant", None)
+        acrylic_board = request.GET.get("acrylic_board", None)
+
+        if desks_quant:
+            return Response(self.serializer_class(self.queryset.filter(desks_quant=desks_quant), many=True).data)
+        elif fans_quant:
+            return Response(self.serializer_class(self.queryset.filter(fans_quant=fans_quant), many=True).data)
+        elif acrylic_board:
+            return Response(self.serializer_class(self.queryset.filter(acrylic_board=acrylic_board), many=True).data)
+        else:
+            return Response(self.serializer_class(self.queryset, many=True).data)
