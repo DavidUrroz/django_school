@@ -1,7 +1,9 @@
 # from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework import permissions
+from rest_framework import permissions, status
+from django.core.mail import send_mail
+from demoEscuela.settings import EMAIL_HOST_USER
 
 
 # from .permissions import IsOwnerOrReadOnly
@@ -50,6 +52,34 @@ class EstudianteViewset(ModelViewSet):
     queryset = Estudiante.objects.all()
     serializer_class = EstudianteSerializer
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def create(self, request):
+
+        serializer = self.get_serializer(data=request.data)
+        # serializer = self.serializer_class(data=request.data)
+        
+        if serializer.is_valid():
+            nombre = serializer.validated_data.get("name")
+            grado = serializer.validated_data.get("school_grade")
+            escuela = serializer.validated_data.get("school")
+            salon = serializer.validated_data.get("salon")
+
+            mensaje = f"El sistema de la escuela {escuela.name} ha creado el estudiante {nombre} y fue asignado al salón {salon.pk} en el grado {grado}"
+
+            try:
+                send_mail(
+                    "Aviso: Creación de estudiante",
+                    mensaje,
+                    EMAIL_HOST_USER,
+                    [EMAIL_HOST_USER],
+                    fail_silently=False
+                )
+                self.perform_create(serializer)
+            except Exception as e:
+                return Response({"error": e})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MaestroViewset(ModelViewSet):
