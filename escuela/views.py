@@ -64,7 +64,7 @@ class EstudianteViewset(ModelViewSet):
             escuela = serializer.validated_data.get("school")
             salon = serializer.validated_data.get("salon")
 
-            mensaje = f"El sistema de la escuela {escuela.name} ha creado el estudiante {nombre} y fue asignado al salón {salon.pk} en el grado {grado}"
+            mensaje = f"El sistema de la escuela {escuela.name} ha creado el estudiante {nombre} y fue asignado al salón {salon.codigo} en el grado {grado}"
 
             try:
                 send_mail(
@@ -85,6 +85,41 @@ class EstudianteViewset(ModelViewSet):
 class MaestroViewset(ModelViewSet):
     queryset = Maestro.objects.all()
     serializer_class = MaestroSerializer
+
+    def create(self, request):
+
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+
+            full_name = serializer.validated_data.get("full_name")
+            field_of_study = serializer.validated_data.get("field_of_study")
+            years_of_experience = serializer.validated_data.get("years_of_experience")
+            on_duty = "Sí" if serializer.validated_data.get("on_duty") else "No"
+            if on_duty:
+                on_duty = ""
+            school = serializer.validated_data.get("school")
+            salon = serializer.validated_data.get("salon")
+
+            mensaje = f"""El sistema de la escuela {school.name} ha creado al maestro {full_name} y fue asignado al salón {salon.codigo}:
+Campo de especialización: {field_of_study}
+Años de experiencia: {years_of_experience}
+En servicio: {on_duty}"""
+
+            try:
+                send_mail(
+                    "Aviso: Creación de maestro",
+                    mensaje,
+                    EMAIL_HOST_USER,
+                    [EMAIL_HOST_USER],
+                    fail_silently=False
+                )
+                self.perform_create(serializer)
+            except Exception as e:
+                return Response({"error": e})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SalonViewset(ModelViewSet):

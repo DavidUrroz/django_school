@@ -14,10 +14,13 @@ class Escuela(models.Model):
 
 class Salon(models.Model):
 
+    codigo = models.TextField(default="")
     desks_quant = models.SmallIntegerField()
     fans_quant = models.SmallIntegerField(blank=True, default=0)
     acrylic_board = models.BooleanField()
 
+    def __str__(self):
+        return self.codigo
 
 
 class Estudiante(models.Model):
