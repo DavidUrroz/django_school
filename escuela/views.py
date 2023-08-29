@@ -1,5 +1,6 @@
 # from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from django.core.mail import send_mail
@@ -139,3 +140,18 @@ class SalonViewset(ModelViewSet):
             return Response(self.serializer_class(self.queryset.filter(acrylic_board=acrylic_board), many=True).data)
         else:
             return Response(self.serializer_class(self.queryset, many=True).data)
+        
+    
+class ModificarGrados(APIView):
+
+    def get(self, request):
+        queryset = Estudiante.objects.all()
+
+        for estudiante in queryset:
+
+            if estudiante.school_grade == "4°":
+                estudiante.domicile = "Canadá"
+                estudiante.save()
+            print(estudiante.domicile)
+
+        return Response({"":""}, status=status.HTTP_200_OK)

@@ -41,6 +41,8 @@ class Estudiante(models.Model):
     school_grade = models.CharField(max_length=20, choices=grades)
     domicile = models.TextField()
 
+    def __str__(self):
+        return self.name
 
 class Maestro(models.Model):
 

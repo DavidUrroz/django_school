@@ -30,6 +30,7 @@ urlpatterns = [
     #         }
     #     ),
     # ),
+    path("modificar", views.ModificarGrados.as_view())
 ]
 
 urlpatterns += router.urls
