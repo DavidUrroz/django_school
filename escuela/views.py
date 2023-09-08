@@ -54,33 +54,33 @@ class EstudianteViewset(ModelViewSet):
     serializer_class = EstudianteSerializer
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def create(self, request):
+    # def create(self, request):
 
-        serializer = self.get_serializer(data=request.data)
-        # serializer = self.serializer_class(data=request.data)
+    #     serializer = self.get_serializer(data=request.data)
+    #     # serializer = self.serializer_class(data=request.data)
         
-        if serializer.is_valid():
-            nombre = serializer.validated_data.get("name")
-            grado = serializer.validated_data.get("school_grade")
-            escuela = serializer.validated_data.get("school")
-            salon = serializer.validated_data.get("salon")
+    #     if serializer.is_valid():
+    #         nombre = serializer.validated_data.get("name")
+    #         grado = serializer.validated_data.get("school_grade")
+    #         escuela = serializer.validated_data.get("school")
+    #         salon = serializer.validated_data.get("salon")
 
-            mensaje = f"El sistema de la escuela {escuela.name} ha creado el estudiante {nombre} y fue asignado al salón {salon.codigo} en el grado {grado}"
+    #         mensaje = f"El sistema de la escuela {escuela.name} ha creado el estudiante {nombre} y fue asignado al salón {salon.codigo} en el grado {grado}"
 
-            try:
-                send_mail(
-                    "Aviso: Creación de estudiante",
-                    mensaje,
-                    EMAIL_HOST_USER,
-                    [EMAIL_HOST_USER],
-                    fail_silently=False
-                )
-                self.perform_create(serializer)
-            except Exception as e:
-                return Response({"error": e})
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #         try:
+    #             send_mail(
+    #                 "Aviso: Creación de estudiante",
+    #                 mensaje,
+    #                 EMAIL_HOST_USER,
+    #                 [EMAIL_HOST_USER],
+    #                 fail_silently=False
+    #             )
+    #             self.perform_create(serializer)
+    #         except Exception as e:
+    #             return Response({"error": e})
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     else:
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MaestroViewset(ModelViewSet):
@@ -155,3 +155,31 @@ class ModificarGrados(APIView):
             print(estudiante.domicile)
 
         return Response({"":""}, status=status.HTTP_200_OK)
+    
+
+class AsignarSalonAlumno(APIView):
+
+    def post(self, request):
+            
+        escuela = request.data.get("school")
+        escuela = Escuela.objects.get(pk=escuela)
+        # salon = request.data.get('salon')
+        salon = Salon.objects.get(pk=1)
+        name = request.data.get("name")
+        last_name = request.data.get("last_name")
+        school_grade = request.data.get("school_grade")
+        domicile = request.data.get("domicile")
+
+        try: 
+            Estudiante.objects.create(
+                school=escuela,
+                salon=salon,
+                name=name,
+                last_name=last_name,
+                school_grade=school_grade,
+                domicile=domicile
+            )
+        except Exception as e:
+            return Response({'error': str(e)})
+
+        return Response({'msg':'200'})
