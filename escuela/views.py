@@ -3,6 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
+from django_filters import rest_framework as filters
 from django.core.mail import send_mail
 from demoEscuela.settings import EMAIL_HOST_USER
 
@@ -52,6 +53,8 @@ class EscuelaViewset(ModelViewSet):
 class EstudianteViewset(ModelViewSet):
     queryset = Estudiante.objects.all()
     serializer_class = EstudianteSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('school_grade', 'domicile')
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     # def create(self, request):
@@ -81,6 +84,12 @@ class EstudianteViewset(ModelViewSet):
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
     #     else:
     #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EstudianteFilter(filters.FilterSet):
+    class Meta:
+        model = Estudiante
+        fields = ('school_grade', 'domicile')
 
 
 class MaestroViewset(ModelViewSet):
