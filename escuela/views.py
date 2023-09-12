@@ -54,7 +54,7 @@ class EstudianteViewset(ModelViewSet):
     queryset = Estudiante.objects.all()
     serializer_class = EstudianteSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('school_grade', 'domicile')
+    filterset_fields = ('school', 'salon', 'name', 'last_name', 'school_grade', 'domicile')
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     # def create(self, request):
