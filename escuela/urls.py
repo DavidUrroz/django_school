@@ -31,7 +31,8 @@ urlpatterns = [
     #     ),
     # ),
     path("modificar", views.ModificarGrados.as_view()),
-    path("asignar-salon", views.AsignarSalonAlumno.as_view())
+    path("asignar-salon", views.AsignarSalonAlumno.as_view()),
+    path("estudiantesPDF", views.RegistroEstudiantes.as_view()),
 ]
 
 urlpatterns += router.urls

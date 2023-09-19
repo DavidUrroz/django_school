@@ -52,3 +52,8 @@ class Maestro(models.Model):
     field_of_study = models.CharField(max_length=60)
     years_of_experience = models.SmallIntegerField()
     on_duty = models.BooleanField()
+
+
+class Registros(models.Model):
+
+    archivo = models.FileField(upload_to="static/uploads/")

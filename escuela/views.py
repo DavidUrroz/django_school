@@ -9,7 +9,7 @@ from demoEscuela.settings import EMAIL_HOST_USER
 
 
 # from .permissions import IsOwnerOrReadOnly
-from .models import Escuela, Estudiante, Maestro, Salon
+from .models import Escuela, Estudiante, Maestro, Salon, Registros
 from .serializers import EscuelaSerializer, EstudianteSerializer, MaestroSerializer, SalonSerializer
 
 # Create your views here.
@@ -85,11 +85,59 @@ class EstudianteViewset(ModelViewSet):
     #     else:
     #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
 
-class EstudianteFilter(filters.FilterSet):
-    class Meta:
-        model = Estudiante
-        fields = ('school_grade', 'domicile')
+
+class RegistroEstudiantes(APIView):
+
+    # 1) el get genera el pdf y regresará la ruta de ese pdf en JSON
+    def get(self, request):
+
+        estudiantes = Estudiante.objects.all()
+
+        pdf_filename = "tabla.pdf"
+        document = SimpleDocTemplate(pdf_filename, pagesize=A4)
+
+        data = [
+            ["Nombre", "Apellido", "Grado escolar", "Domicilio", "Escuela", "Salón"],
+            [e.name for e in estudiantes],
+            [e.last_name for e in estudiantes],
+            [e.school_grade for e in estudiantes],
+            [e.domicile for e in estudiantes],
+            [e.school.name for e in estudiantes],
+            [e.salon.codigo for e in estudiantes],
+        ]
+
+        table = Table(data)
+
+        style = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),  # Fila de encabezado
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Texto en encabezado
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinear contenido al centro
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Fuente en encabezado
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # Espacio inferior en encabezado
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),  # Color de fondo para filas de datos
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)  # Líneas de cuadrícula
+        ])
+        
+        table.setStyle(style)
+
+        story = []
+        story.append(table)
+
+        document.build(story)
+
+        registro = Registros.objects.create(archivo=pdf_filename)
+
+        return Response({"archivo":registro.archivo}, status=status.HTTP_201_CREATED)
+
+
+# class EstudianteFilter(filters.FilterSet):
+#     class Meta:
+#         model = Estudiante
+#         fields = ('school_grade', 'domicile')
 
 
 class MaestroViewset(ModelViewSet):
