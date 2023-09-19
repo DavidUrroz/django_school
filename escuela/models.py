@@ -56,4 +56,5 @@ class Maestro(models.Model):
 
 class Registros(models.Model):
 
+    nombre = models.CharField(max_length=50)
     archivo = models.FileField(upload_to="static/uploads/")

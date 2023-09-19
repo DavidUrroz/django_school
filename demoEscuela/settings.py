@@ -27,7 +27,6 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,7 +41,10 @@ INSTALLED_APPS = [
     "escuela",
     "correo",
     "proveedores",
+    "users",
 ]
+
+AUTH_USER_MODEL = "users.Customers"
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"]

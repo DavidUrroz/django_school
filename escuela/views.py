@@ -129,9 +129,10 @@ class RegistroEstudiantes(APIView):
 
         document.build(story)
 
-        registro = Registros.objects.create(archivo=pdf_filename)
+        # registro = Registros.objects.create(archivo=document)
 
-        return Response({"archivo":registro.archivo}, status=status.HTTP_201_CREATED)
+        # return Response({"archivo":registro.archivo}, status=status.HTTP_201_CREATED)
+        return Response({"archivo":''}, status=status.HTTP_201_CREATED)
 
 
 # class EstudianteFilter(filters.FilterSet):
